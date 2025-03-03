@@ -1,7 +1,8 @@
 from datetime import timedelta
 from temporalio import workflow
 from temporalio.common import RetryPolicy
-from typing import Dict, List
+from typing import Dict
+from data import ScrapedData
 
 with workflow.unsafe.imports_passed_through():
     from activities import analyze_sentiment, store_results_in_sheets
@@ -19,7 +20,7 @@ class RedditScraperWorkflow:
         
         while True:
             # Execute the scraping activity
-            posts = await workflow.execute_activity(
+            scraped_data = await workflow.execute_activity(
                 scrape_reddit,
                 start_to_close_timeout=timedelta(minutes=5),
                 retry_policy=RetryPolicy(
@@ -29,8 +30,8 @@ class RedditScraperWorkflow:
                 )
             )
             
-            # Send the posts to the sentiment analyzer workflow via signal
-            await sentiment_analyzer.signal("new_posts", posts)
+            # Send the scraped data to the sentiment analyzer workflow via signal
+            await sentiment_analyzer.signal("new_content", scraped_data)
             
             # Wait for 1 hour before next scrape
             await workflow.sleep(timedelta(hours=1))
@@ -38,30 +39,34 @@ class RedditScraperWorkflow:
 @workflow.defn
 class SentimentAnalyzerWorkflow:
     def __init__(self) -> None:
-        self._posts_queue: List[Dict] = []
+        self._content_queue: list[ScrapedData] = []
     
     @workflow.signal
-    async def new_posts(self, posts: List[Dict]) -> None:
-        """Signal handler for receiving new posts"""
-        self._posts_queue.extend(posts)
-        workflow.logger.info(f"Received {len(posts)} new posts for analysis")
+    async def new_content(self, scraped_data: ScrapedData) -> None:
+        """Signal handler for receiving new content"""
+        self._content_queue.append(scraped_data)
+        workflow.logger.info(
+            f"Received {len(scraped_data.items)} items from {scraped_data.platform} "
+            f"for analysis"
+        )
     
     @workflow.run
     async def run(self) -> None:
         workflow.logger.info("Starting sentiment analyzer workflow")
         
         while True:
-            if self._posts_queue:
-                # Get the next batch of posts
-                posts_to_analyze = self._posts_queue[:]
-                self._posts_queue.clear()
+            if self._content_queue:
+                # Get the next batch of content
+                scraped_data = self._content_queue.pop(0)
                 
-                workflow.logger.info(f"Processing {len(posts_to_analyze)} posts")
+                workflow.logger.info(
+                    f"Processing {len(scraped_data.items)} items from {scraped_data.platform}"
+                )
                 
                 # Analyze sentiment
                 sentiment_results = await workflow.execute_activity(
                     analyze_sentiment,
-                    posts_to_analyze,
+                    scraped_data,
                     start_to_close_timeout=timedelta(minutes=5),
                     retry_policy=RetryPolicy(
                         initial_interval=timedelta(seconds=1),
@@ -84,12 +89,13 @@ class SentimentAnalyzerWorkflow:
                 
                 # Log the results
                 workflow.logger.info(
-                    f"Analyzed {len(posts_to_analyze)} posts. "
-                    f"Average sentiment: {sentiment_results['average_sentiment']}"
+                    f"Analyzed {len(scraped_data.items)} items from {scraped_data.platform}. "
+                    f"Average sentiment: {sentiment_results['average_sentiment']}, "
+                    f"Distribution: {sentiment_results['distribution']}"
                 )
             
-            # Wait a bit before checking for more posts
-            await workflow.sleep(timedelta(seconds=30))
+            # Wait a bit before checking for more content
+            await workflow.sleep(timedelta(seconds=10))
 
 @workflow.defn
 class TwitterScraperWorkflow:
@@ -102,7 +108,7 @@ class TwitterScraperWorkflow:
         
         while True:
             # Execute the scraping activity
-            tweets = await workflow.execute_activity(
+            scraped_data = await workflow.execute_activity(
                 scrape_twitter,
                 start_to_close_timeout=timedelta(minutes=5),
                 retry_policy=RetryPolicy(
@@ -112,8 +118,8 @@ class TwitterScraperWorkflow:
                 )
             )
             
-            # Send the tweets to the sentiment analyzer workflow via signal
-            await sentiment_analyzer.signal("new_posts", tweets)
+            # Send the scraped data to the sentiment analyzer workflow via signal
+            await sentiment_analyzer.signal("new_content", scraped_data)
             
             # Wait for 2 hours before next scrape - longer interval to avoid rate limits
             await workflow.sleep(timedelta(hours=2)) 
