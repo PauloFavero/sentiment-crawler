@@ -25,7 +25,7 @@ async def analyze_sentiment(scraped_data: ScrapedData) -> Dict:
         try:
             # Get analysis from OpenAI
             response = await client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "You are a sentiment analysis expert. Analyze content thoroughly and provide analysis in the requested JSON format only."},
                     {"role": "user", "content": prompt}
@@ -36,19 +36,22 @@ async def analyze_sentiment(scraped_data: ScrapedData) -> Dict:
             
             # Parse the response
             try:
-                analysis = json.loads(response.choices[0].message.content)
-                sentiment_score = analysis["sentiment_analysis"]["sentiment_score"]
+                # Parse the LLM response and extract sentiment analysis
+                sentiment_data = json.loads(response.choices[0].message.content)
                 
-                # Add analysis to content data
-                analyzed_content = content.model_copy(deep=True)
-                if analyzed_content.platform_specific_data is None:
-                    analyzed_content.platform_specific_data = {}
-                analyzed_content.platform_specific_data["sentiment_analysis"] = analysis
+                # Update the content object with sentiment analysis results
+                content_dict = content.model_dump()
+                if "platform_specific_data" not in content_dict:
+                    content_dict["platform_specific_data"] = {}
                 
-                analyzed_posts.append(analyzed_content.model_dump())
-                total_sentiment += sentiment_score
+                content_dict["platform_specific_data"]["sentiment_analysis"] = sentiment_data["sentiment_analysis"]
+                content_dict["platform_specific_data"]["summary"] = sentiment_data["summary"]
                 
-                logger.info(f"Analyzed {content.platform} content {content.id} with sentiment score {sentiment_score}")
+                # Add to analyzed posts and update total sentiment
+                analyzed_posts.append(content_dict)
+                total_sentiment += sentiment_data["sentiment_analysis"]["sentiment_score"]
+                
+                logger.info(f"Analyzed {content.platform} content {content.id} with sentiment score {sentiment_data['sentiment_analysis']['sentiment_score']}")
                 
             except (json.JSONDecodeError, KeyError) as e:
                 logger.error(f"Error parsing analysis JSON: {e}")
