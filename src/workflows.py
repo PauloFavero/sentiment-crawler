@@ -5,7 +5,7 @@ from typing import Dict
 from data import ScrapedData
 
 with workflow.unsafe.imports_passed_through():
-    from activities import analyze_sentiment
+    from activities import analyze_sentiment, store_results_in_sheets
     from reddit import scrape_reddit
     from twitter import scrape_twitter
 
@@ -84,6 +84,18 @@ class SentimentAnalyzerWorkflow:
                     analyze_sentiment,
                     scraped_data,
                     start_to_close_timeout=timedelta(minutes=5),
+                    retry_policy=RetryPolicy(
+                        initial_interval=timedelta(seconds=1),
+                        maximum_interval=timedelta(minutes=1),
+                        maximum_attempts=3,
+                    )
+                )
+                
+                # Store the results in Google Sheets
+                await workflow.execute_activity(
+                    store_results_in_sheets,
+                    sentiment_results,
+                    start_to_close_timeout=timedelta(minutes=2),
                     retry_policy=RetryPolicy(
                         initial_interval=timedelta(seconds=1),
                         maximum_interval=timedelta(minutes=1),

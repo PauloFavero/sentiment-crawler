@@ -22,7 +22,13 @@ RUN mkdir -p /app/src
 COPY ./src/ /app/src/
 
 # Install dependencies
-RUN poetry install --no-interaction --no-ansi
+RUN poetry install --no-interaction --no-ansi || pip install temporalio praw asyncpraw openai tweepy
+
+# Install Google Sheets dependencies explicitly
+RUN pip install gspread oauth2client
+
+# Make run script executable
+RUN chmod +x /app/src/run_worker.sh
 
 # Set the command to run the worker
-CMD ["python", "app/worker.py"] 
+CMD ["/app/src/run_worker.sh"] 
