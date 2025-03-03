@@ -3,8 +3,8 @@ import os
 import logging
 from temporalio.client import Client
 from temporalio.worker import Worker
-from workflows import RedditScraperWorkflow, SentimentAnalyzerWorkflow
-from activities import scrape_reddit, analyze_sentiment
+from workflows import RedditScraperWorkflow, SentimentAnalyzerWorkflow, TwitterScraperWorkflow
+from activities import scrape_reddit, analyze_sentiment, scrape_twitter
 
 # Configure logging
 logging.basicConfig(
@@ -24,8 +24,8 @@ async def main():
         worker = Worker(
             client,
             task_queue="reddit-tasks",
-            workflows=[RedditScraperWorkflow, SentimentAnalyzerWorkflow],
-            activities=[scrape_reddit, analyze_sentiment]
+            workflows=[RedditScraperWorkflow, SentimentAnalyzerWorkflow, TwitterScraperWorkflow],
+            activities=[scrape_reddit, analyze_sentiment, scrape_twitter]
         )
         
         # Start both workflows when the worker starts
@@ -46,6 +46,14 @@ async def main():
                     task_queue="reddit-tasks"
                 )
                 logger.info("Started Reddit scraper workflow")
+                
+                # Start the Twitter scraper workflow
+                await client.start_workflow(
+                    TwitterScraperWorkflow.run,
+                    id="twitter-scraper",
+                    task_queue="reddit-tasks"
+                )
+                logger.info("Started Twitter scraper workflow")
                 
             except Exception as e:
                 logger.error(f"Error starting workflows: {e}")
