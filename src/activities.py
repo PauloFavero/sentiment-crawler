@@ -3,6 +3,9 @@ import os
 from openai import AsyncOpenAI
 from typing import Dict, List
 import logging
+from .models import Post
+from .sheets_util import SheetsClient
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -139,3 +142,31 @@ async def analyze_sentiment(posts: List[Dict]) -> Dict:
         "distribution": sentiment_distribution,
         "average_sentiment": avg_sentiment
     }
+
+@activity.defn
+async def store_results_in_sheets(sentiment_results: Dict) -> bool:
+    """
+    Activity to store sentiment analysis results in Google Sheets.
+    
+    Args:
+        sentiment_results: Dictionary containing sentiment analysis results
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        # Initialize the Google Sheets client
+        sheets_client = SheetsClient()
+        
+        # Store the results
+        success = sheets_client.append_sentiment_results(sentiment_results)
+        
+        if success:
+            logger.info("Successfully stored sentiment results in Google Sheets")
+        else:
+            logger.error("Failed to store sentiment results in Google Sheets")
+            
+        return success
+    except Exception as e:
+        logger.error(f"Error storing sentiment results in Google Sheets: {e}")
+        return False

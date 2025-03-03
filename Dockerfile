@@ -24,5 +24,8 @@ COPY ./src/ /app/src/
 # Install dependencies
 RUN poetry install --no-interaction --no-ansi
 
+# Install Google Sheets dependencies
+RUN pip install gspread oauth2client
+
 # Set the command to run the worker
 CMD ["python", "app/worker.py"] 

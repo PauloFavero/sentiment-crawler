@@ -4,7 +4,7 @@ import logging
 from temporalio.client import Client
 from temporalio.worker import Worker
 from workflows import RedditScraperWorkflow, SentimentAnalyzerWorkflow, TwitterScraperWorkflow
-from activities import analyze_sentiment
+from activities import analyze_sentiment, store_results_in_sheets
 from reddit import scrape_reddit
 from twitter import scrape_twitter
 
@@ -27,7 +27,7 @@ async def main():
             client,
             task_queue="reddit-tasks",
             workflows=[RedditScraperWorkflow, SentimentAnalyzerWorkflow, TwitterScraperWorkflow],
-            activities=[scrape_reddit, analyze_sentiment, scrape_twitter]
+            activities=[scrape_reddit, analyze_sentiment, scrape_twitter, store_results_in_sheets]
         )
         
         # Start both workflows when the worker starts

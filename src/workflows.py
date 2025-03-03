@@ -4,7 +4,7 @@ from temporalio.common import RetryPolicy
 from typing import Dict, List
 
 with workflow.unsafe.imports_passed_through():
-    from activities import analyze_sentiment
+    from activities import analyze_sentiment, store_results_in_sheets
     from reddit import scrape_reddit
     from twitter import scrape_twitter
 
@@ -70,6 +70,18 @@ class SentimentAnalyzerWorkflow:
                     )
                 )
                 
+                # Store the results in Google Sheets
+                await workflow.execute_activity(
+                    store_results_in_sheets,
+                    sentiment_results,
+                    start_to_close_timeout=timedelta(minutes=2),
+                    retry_policy=RetryPolicy(
+                        initial_interval=timedelta(seconds=1),
+                        maximum_interval=timedelta(minutes=1),
+                        maximum_attempts=3,
+                    )
+                )
+                
                 # Log the results
                 workflow.logger.info(
                     f"Analyzed {len(posts_to_analyze)} posts. "
@@ -77,7 +89,7 @@ class SentimentAnalyzerWorkflow:
                 )
             
             # Wait a bit before checking for more posts
-            await workflow.sleep(timedelta(seconds=5))
+            await workflow.sleep(timedelta(seconds=30))
 
 @workflow.defn
 class TwitterScraperWorkflow:
