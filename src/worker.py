@@ -3,8 +3,8 @@ import os
 import logging
 from temporalio.client import Client
 from temporalio.worker import Worker
-from workflows import GreetingWorkflow, RedditScraperWorkflow
-from activities import say_hello, scrape_reddit, analyze_sentiment
+from workflows import RedditScraperWorkflow
+from activities import scrape_reddit, analyze_sentiment
 
 # Configure logging
 logging.basicConfig(
@@ -24,8 +24,8 @@ async def main():
         worker = Worker(
             client,
             task_queue="reddit-tasks",
-            workflows=[GreetingWorkflow, RedditScraperWorkflow],
-            activities=[say_hello, scrape_reddit, analyze_sentiment]
+            workflows=[RedditScraperWorkflow],
+            activities=[scrape_reddit, analyze_sentiment]
         )
         
         # Start the Reddit scraper workflow when the worker starts

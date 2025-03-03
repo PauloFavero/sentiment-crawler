@@ -2,12 +2,12 @@ from datetime import datetime
 from temporalio import activity
 import asyncpraw
 import os
-from transformers import pipeline
+from openai import AsyncOpenAI
 from typing import Dict, List
+import logging
 
-@activity.defn
-async def say_hello(name: str) -> str:
-    return f"Hello {name} at {datetime.now()}"
+logger = logging.getLogger(__name__)
+
 
 @activity.defn
 async def scrape_reddit() -> list:
@@ -38,36 +38,71 @@ async def scrape_reddit() -> list:
 
 @activity.defn
 async def analyze_sentiment(posts: List[Dict]) -> Dict:
-    # Initialize the sentiment analysis pipeline
-    sentiment_analyzer = pipeline(
-        model="finiteautomata/bertweet-base-sentiment-analysis"
-    )
+    # Initialize OpenAI client
+    client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     
-    # Analyze sentiment for each post title
     analyzed_posts = []
-    sentiment_counts = {"POS": 0, "NEG": 0, "NEU": 0}
+    total_sentiment = 0
     
     for post in posts:
-        # Analyze sentiment of the title
-        sentiment_result = sentiment_analyzer(post["title"])[0]
+        # Create prompt for sentiment analysis
+        prompt = f"""
+        Analyze the following title from Reddit and provide:
+        1. A brief summary (2-3 sentences)
+        2. A sentiment score between 0 and 1 where:
+           - 0 is extremely negative
+           - 0.5 is neutral
+           - 1 is extremely positive
         
-        # Add sentiment to post data
-        analyzed_post = post.copy()
-        analyzed_post["sentiment"] = sentiment_result["label"]
-        analyzed_post["sentiment_score"] = sentiment_result["score"]
-        analyzed_posts.append(analyzed_post)
+        Title: {post['title']}
         
-        # Update sentiment counts
-        sentiment_counts[sentiment_result["label"]] += 1
+        Provide your response in the following JSON format:
+        {{
+            "summary": "your summary here",
+            "sentiment_score": 0.X
+        }}
+        """
+        
+        # Get analysis from OpenAI
+        response = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a sentiment analysis expert. Provide analysis in the requested JSON format only."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            response_format={"type": "json_object"}
+        )
+        
+        # Parse the response
+        try:
+            analysis = response.choices[0].message.content
+            # Add analysis to post data
+            analyzed_post = post.copy()
+            analyzed_post.update({
+                "analysis": analysis,
+                "sentiment_score": analysis.get("sentiment_score", 0.5)
+            })
+            analyzed_posts.append(analyzed_post)
+            total_sentiment += analysis.get("sentiment_score", 0.5)
+        except Exception as e:
+            logger.error(f"Error parsing OpenAI response: {e}")
+            # Add post with neutral sentiment if parsing fails
+            analyzed_posts.append({**post, "sentiment_score": 0.5})
+            total_sentiment += 0.5
     
-    # Calculate distribution percentages
-    total_posts = len(posts)
+    # Calculate average sentiment
+    avg_sentiment = total_sentiment / len(posts) if posts else 0.5
+    
+    # Create sentiment distribution buckets
     sentiment_distribution = {
-        label: (count / total_posts) * 100 
-        for label, count in sentiment_counts.items()
+        "positive": len([p for p in analyzed_posts if p["sentiment_score"] > 0.6]),
+        "neutral": len([p for p in analyzed_posts if 0.4 <= p["sentiment_score"] <= 0.6]),
+        "negative": len([p for p in analyzed_posts if p["sentiment_score"] < 0.4])
     }
     
     return {
         "analyzed_posts": analyzed_posts,
-        "distribution": sentiment_distribution
+        "distribution": sentiment_distribution,
+        "average_sentiment": avg_sentiment
     } 
