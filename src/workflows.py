@@ -75,7 +75,7 @@ class SentimentAnalyzerWorkflow:
                 )
             
             # Wait a bit before checking for more posts
-            await workflow.sleep(timedelta(seconds=30))
+            await workflow.sleep(timedelta(seconds=5))
 
 @workflow.defn
 class TwitterScraperWorkflow:
