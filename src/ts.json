@@ -1,0 +1,1094 @@
+[
+	{
+		"analyzed_posts": [
+			{
+				"author": {
+					"id": "neutronbob",
+					"name": "neutronbob",
+					"platform_specific_data": null
+				},
+				"created_at": 1740967580,
+				"engagement_metrics": {
+					"num_comments": 250,
+					"score": 257,
+					"upvote_ratio": 0.85
+				},
+				"id": "1j27wf6",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "GetIntoGameDev",
+							"name": "GetIntoGameDev",
+							"platform_specific_data": null
+						},
+						"content": "We trained an army to defend it, but the soldiers keep shooting themselves in the foot.",
+						"created_at": 1740979092,
+						"id": "mfqhuxy",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 440
+					},
+					{
+						"author": {
+							"id": "RockstarArtisan",
+							"name": "RockstarArtisan",
+							"platform_specific_data": null
+						},
+						"content": "Strostroup literally founded C++ language on this type of \"attack\" - agressively selling his language to the users of already established language he built upon.\n\nThe C++ evangelist strike force has decades of history of pestering projects to \"upgrade\" C projects to C++. Some were successful (like GCC) some weren't (like Linux). There's a speaker at C++ conferences that has built a career of trying to sell C++ to embedded devs. The C++ tutorials of the time (at least the one I used) were constantly talking about how C++ is better (and safer!) than C and there's no reason to use C. I'm pretty sure Bjarne's book is the same. It's even in the language principles: \"nothing below C++\".\n\nC++ is no longer the state of the art language for systems programming and Bjarne has a hard time coping with this. He had very little competition for 3 decades so he got complacent and Rust took him by surprise. Now he flails around in panic, beset by siege mentality.",
+						"created_at": 1740971302,
+						"id": "mfpyg8w",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": true,
+							"is_stickied": false
+						},
+						"score": 372
+					},
+					{
+						"author": {
+							"id": "zzqzqq",
+							"name": "zzqzqq",
+							"platform_specific_data": null
+						},
+						"content": "Person behind large enterprise codebases here.\n\nHe and others behind C++, really dropped the ball. In the mid 1990s we should have had a decent networking and container library, standardized threads over pthreads,  had something like std::print.\n\nIt didn't, and let other stuff grow in place.\n\nThey could even have had a basic GUI library, but instead we've had decades of having to build our own, with overcomplicated build processes for dependencies.",
+						"created_at": 1740976498,
+						"id": "mfqc1sm",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 160
+					},
+					{
+						"author": {
+							"id": "ravixp",
+							"name": "ravixp",
+							"platform_specific_data": null
+						},
+						"content": "The call is coming from inside the house, though? In my experience the strongest critics of C++ are professional C++ programmers who want the language to be better. We’re not concerned about memory safety because of theoretical concerns, it’s because we keep having to drop everything to fix CVEs, and the language isn’t doing enough to help us with that.",
+						"created_at": 1740981740,
+						"id": "mfqn5j7",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 117
+					},
+					{
+						"author": {
+							"id": "CommunismDoesntWork",
+							"name": "CommunismDoesntWork",
+							"platform_specific_data": null
+						},
+						"content": "Shoulda created an official build system and package manager while you had the chance. People could forgive the memory safety bs, but the C++ ecosystem is FUBAR and it's time to move on. ",
+						"created_at": 1740969155,
+						"id": "mfpscof",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 119
+					},
+					{
+						"author": {
+							"id": "thegreatunclean",
+							"name": "thegreatunclean",
+							"platform_specific_data": null
+						},
+						"content": ">\"This is clearly not a traditional technical note proposing a new language or library feature. It is a call to urgent action partly in response to unprecedented, serious attacks on C++. I think WG21 needs to do something significant and be seen to do it. Profiles is a framework that can do that.\"\n\nAnd yet we have many people like [Sean Baxter pointing out](https://www.circle-lang.org/draft-profiles.html) that the current Profiles proposal is not capable of handling core aspects of memory safety.  These are not trivial issues and I have yet to see them be addressed.  If they have I'd love to read about it!  The lack of implementation experience and real-world testing does not inspire confidence these changes will change the reality we face today.\n\nMeanwhile we have mature systems languages and tooling available *right now* that can make stronger guarantees about memory safety.  The world cannot and will not wait for C++ to get it's house in order!  If the choice is between:\n\n* C++ with some unspecified amount of increased (but not guaranteed) memory safety possibly arriving in the next decade\n* Rust offering stronger guarantees than that available today\n\nis it any wonder that companies are jumping ship?  C++ is a painfully late to the party and seems to implementing half-measures to try and close the gap.",
+						"created_at": 1740972342,
+						"id": "mfq1c67",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 108
+					},
+					{
+						"author": {
+							"id": "bakaspore",
+							"name": "bakaspore",
+							"platform_specific_data": null
+						},
+						"content": "It seems that there is a little bit of ... inaccuracy about Rust in this article. I'd like to do some nitpicking here.\n\n\n\n> \"Very few things are written in a single language these days and memory-safety across languages is important,\" he wrote. \"If you write a Rust core with Lua scripting, but Lua doesn’t respect Rust’s unique ownership model then that makes it very hard to interoperate safely. Tools for safe interoperation are important.\"\n\n\nHis point holds. But the example is about a solved problem: see [mlua](https://github.com/mlua-rs/mlua). I have written Rust code interoperating with Lua both ways and it feels like a breeze.\n\n> \"Rewriting billions of lines of code all at once is a problem: Even if the end result is memory safe, rewriting code introduces bugs and a lot of those will be safety or security critical. Selling a migration story from C to a safe C++ dialect that people can do a little bit at a time over multiple years would be great for C++.\"\n\n\n\nThe timing to say that rewriting must be done all at once is awkward, considering [fish shell](https://fishshell.com/blog/rustport/) has just released version 4.0.0 which was *incrementally* ported to Rust. I'd also like to argue that to introduce the same level of safety you have to do the same amount of rewriting, but it's not about Rust and I have less experience in that regard.",
+						"created_at": 1740979725,
+						"id": "mfqj6sz",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 39
+					},
+					{
+						"author": {
+							"id": "No-Magazine-2739",
+							"name": "No-Magazine-2739",
+							"platform_specific_data": null
+						},
+						"content": "I love C++ but when I hear myself talking about all the things you have to do: conanv1 vs v2 issues, CMake boilerplate, Boost, compiler idiocracy, I understand the toolchain criticism. And I default to „write decent C++ and you don‘t need that Rust glitter“ but in the end, you search on weeks for that bug caused by UB caused by lifetime issues/use after free written by the subpar cheap contractor they hired before you. \nBut mom I am on a skill sunken cost fallacy!",
+						"created_at": 1740984585,
+						"id": "mfqscso",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 31
+					},
+					{
+						"author": {
+							"id": "bestleftunsolved",
+							"name": "bestleftunsolved",
+							"platform_specific_data": null
+						},
+						"content": "Well it said that they fired most of the memory safety people at the Cybersecurity Infrastructure Security Agency (CISA) so I guess it's not a problem anymore.",
+						"created_at": 1740977051,
+						"id": "mfqdbir",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 30
+					},
+					{
+						"author": {
+							"id": "light_switchy",
+							"name": "light_switchy",
+							"platform_specific_data": null
+						},
+						"content": "We're witnessing Stroustrup's life's work being flown into a mountain by a giant committee full of random programmers who have rejected his proposals and ignored his repeated calls for simplicity and temperance.  That sucks and I feel bad for the guy.  I value his work, his contributions.  He's made a sizeable impact on my life, and I understand his personal attachment to C++.\n\nOn the other hand, we should not *have* personal attachments to our tools.  We ought to replace them when something better comes along.  When the replacement becomes a worthy investment.",
+						"created_at": 1740984635,
+						"id": "mfqsg25",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 26
+					}
+				],
+				"score": 257,
+				"text": "",
+				"title": "Stroustrup calls for defense against attacks on C++",
+				"url": "https://www.theregister.com/2025/03/02/c_creator_calls_for_action/"
+			},
+			{
+				"author": {
+					"id": "Johnny234Jensen",
+					"name": "Johnny234Jensen",
+					"platform_specific_data": null
+				},
+				"created_at": 1741016247,
+				"engagement_metrics": {
+					"num_comments": 2,
+					"score": 9,
+					"upvote_ratio": 0.68
+				},
+				"id": "1j2lewp",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "Empanatacion",
+							"name": "Empanatacion",
+							"platform_specific_data": null
+						},
+						"content": "This is a commercial",
+						"created_at": 1741017057,
+						"id": "mfsnd4e",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 6
+					}
+				],
+				"score": 9,
+				"text": "",
+				"title": "Why Local-First Software Is the Future and what are its Limitations",
+				"url": "https://rxdb.info/articles/local-first-future.html"
+			},
+			{
+				"author": {
+					"id": "Head-Gap-1717",
+					"name": "Head-Gap-1717",
+					"platform_specific_data": null
+				},
+				"created_at": 1740968858,
+				"engagement_metrics": {
+					"num_comments": 35,
+					"score": 63,
+					"upvote_ratio": 0.72
+				},
+				"id": "1j28b4y",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "No_Nobody4036",
+							"name": "No_Nobody4036",
+							"platform_specific_data": null
+						},
+						"content": "Asking for email to share a snippet that can be [viewed publicly](https://controlc.com/50884d2c) is a bit suspicious.",
+						"created_at": 1740969383,
+						"id": "mfpszud",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 71
+					},
+					{
+						"author": {
+							"id": "gonzofish",
+							"name": "gonzofish",
+							"platform_specific_data": null
+						},
+						"content": "That dude can run fast",
+						"created_at": 1740971493,
+						"id": "mfpyzb8",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 8
+					},
+					{
+						"author": {
+							"id": "zigs",
+							"name": "zigs",
+							"platform_specific_data": null
+						},
+						"content": "Nothing on firefox, mac",
+						"created_at": 1740982146,
+						"id": "mfqnwp8",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 8
+					},
+					{
+						"author": {
+							"id": "gimmeslack12",
+							"name": "gimmeslack12",
+							"platform_specific_data": null
+						},
+						"content": "Holy crap, I love stuff like this. Look at him go! You should make this into a chrome extension!",
+						"created_at": 1740972450,
+						"id": "mfq1nlz",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 3
+					},
+					{
+						"author": {
+							"id": "Oneinterestingthing",
+							"name": "Oneinterestingthing",
+							"platform_specific_data": null
+						},
+						"content": "Nothing on iphone",
+						"created_at": 1740973583,
+						"id": "mfq4tlp",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 3
+					},
+					{
+						"author": {
+							"id": "xtravar",
+							"name": "xtravar",
+							"platform_specific_data": null
+						},
+						"content": "Pretty innovative! It'd be cool if he had articulating joints/natural gait. Kinda looks like a twirling squid or coat rack.",
+						"created_at": 1740972967,
+						"id": "mfq33pi",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 2
+					},
+					{
+						"author": {
+							"id": "norssk_mann",
+							"name": "norssk_mann",
+							"platform_specific_data": null
+						},
+						"content": "Nothing on Android/Firefox.",
+						"created_at": 1740996102,
+						"id": "mfrat3n",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 2
+					},
+					{
+						"author": {
+							"id": "saposmak",
+							"name": "saposmak",
+							"platform_specific_data": null
+						},
+						"content": "This is very cute.",
+						"created_at": 1740972213,
+						"id": "mfq0zaz",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 1
+					}
+				],
+				"score": 63,
+				"text": "",
+				"title": "Made a scroll bar buddy that walks down the page when you scroll",
+				"url": "https://focusfurnace.com/scroll_buddy.html"
+			},
+			{
+				"author": {
+					"id": "Specialist_Square818",
+					"name": "Specialist_Square818",
+					"platform_specific_data": null
+				},
+				"created_at": 1740936468,
+				"engagement_metrics": {
+					"num_comments": 64,
+					"score": 319,
+					"upvote_ratio": 0.82
+				},
+				"id": "1j1w6ar",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "tolerablepartridge",
+							"name": "tolerablepartridge",
+							"platform_specific_data": null
+						},
+						"content": "Interesting. How do you ensure files that are rarely used, but used nonetheless, aren't killed in the pruning process? If I understand correctly, this is not a static tree-shaking approach, but based on runtime access profiling, so to be truly safe the image needs to have full production branch coverage during the profiling process.",
+						"created_at": 1740937154,
+						"id": "mfmyu8t",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 277
+					},
+					{
+						"author": {
+							"id": "fiskfisk",
+							"name": "fiskfisk",
+							"platform_specific_data": null
+						},
+						"content": "How is this better or different from Slim?\n\n[https://github.com/slimtoolkit/slim](https://github.com/slimtoolkit/slim)\n\nWhich is also a CNCF Sandbox project, so it's widely supported and maintained.",
+						"created_at": 1740937521,
+						"id": "mfn03mz",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 130
+					},
+					{
+						"author": {
+							"id": "sionescu",
+							"name": "sionescu",
+							"platform_specific_data": null
+						},
+						"content": "Containers aren't bloated. Container images might be. It's important to speak precisely.",
+						"created_at": 1740942568,
+						"id": "mfnhdyx",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": true,
+							"is_stickied": false
+						},
+						"score": 100
+					},
+					{
+						"author": {
+							"id": "Reverent",
+							"name": "Reverent",
+							"platform_specific_data": null
+						},
+						"content": "Bloated is a pretty dumb word to attribute to container image storage space requirements.\n\nI don't really care about a container image being 10MB vs 100MB, as it doesn't affect the actual performance at all.\n\nOh wait, I take it back. I *do* care when these tools accidentally strip out critical libraries and break the image in unforseen ways. I *do* care when troubleshooting container problems and realising that the image is so far from a standardized release, that I can't even start from a known good state. I *do* care when it breaks the layer model, meaning that image layers don't get reused across similar images.\n\nThe CVE statistic is also a bad faith metric. Guaranteed it's not accounting for backports and false positives, which will make up the vast majority of the CVEs.",
+						"created_at": 1740947691,
+						"id": "mfnylbo",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": true,
+							"is_stickied": false
+						},
+						"score": 92
+					},
+					{
+						"author": {
+							"id": "imawesomehello",
+							"name": "imawesomehello",
+							"platform_specific_data": null
+						},
+						"content": "Not my containers.",
+						"created_at": 1740936671,
+						"id": "mfmx70j",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 22
+					},
+					{
+						"author": {
+							"id": "Ashken",
+							"name": "Ashken",
+							"platform_specific_data": null
+						},
+						"content": "Why is this better than just using `FROM scratch`?",
+						"created_at": 1740938636,
+						"id": "mfn3wnc",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 26
+					},
+					{
+						"author": {
+							"id": "No_Technician7058",
+							"name": "No_Technician7058",
+							"platform_specific_data": null
+						},
+						"content": "this is akin to having all the doors in your home you didnt use yesterday removed to \"improve security\"\n\nmaybe instead focus on understanding what images need vs do not need to work using ones brain and then remove the things one has determined are not required.",
+						"created_at": 1740952737,
+						"id": "mfof7hk",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 20
+					},
+					{
+						"author": {
+							"id": "EscritorDelMal",
+							"name": "EscritorDelMal",
+							"platform_specific_data": null
+						},
+						"content": "This can already be done using distroless containers",
+						"created_at": 1740940022,
+						"id": "mfn8mor",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 14
+					},
+					{
+						"author": {
+							"id": "AnnoyedVelociraptor",
+							"name": "AnnoyedVelociraptor",
+							"platform_specific_data": null
+						},
+						"content": "Separate building layer from final layer. You don't need gcc and build-essentials on the final layer. \n\nIdeally use a compiled language, and statically include dependencies. You can't share dependencies anyway, the whole point of a container is that it's all tied together. Might as well get the static compilation performance jump. \n\nSometimes it's not possible and you need dynamic linking. That's fine. Still separate the containers and clean up behind you. E.g. rm -rf /var/apt/lists (or whatever the path is).",
+						"created_at": 1740951091,
+						"id": "mfo9u4t",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 14
+					},
+					{
+						"author": {
+							"id": "Smooth_Detective",
+							"name": "Smooth_Detective",
+							"platform_specific_data": null
+						},
+						"content": "At what point do we get to just writing static binaries again?",
+						"created_at": 1740977301,
+						"id": "mfqdvyt",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 8
+					}
+				],
+				"score": 319,
+				"text": "",
+				"title": "Containers are bloated. BLAFS can cut up to 90% of the container size while removing tons of CVEs",
+				"url": "https://github.com/negativa-ai/BLAFS"
+			},
+			{
+				"author": {
+					"id": "initcommit",
+					"name": "initcommit",
+					"platform_specific_data": null
+				},
+				"created_at": 1740925095,
+				"engagement_metrics": {
+					"num_comments": 52,
+					"score": 316,
+					"upvote_ratio": 0.84
+				},
+				"id": "1j1rtv3",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "_Valparaiso",
+							"name": "_Valparaiso",
+							"platform_specific_data": null
+						},
+						"content": "Finally a chance to FEEL a git concept 🤤",
+						"created_at": 1740928985,
+						"id": "mfm78gj",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 54
+					},
+					{
+						"author": {
+							"id": "martin",
+							"name": "martin",
+							"platform_specific_data": null
+						},
+						"content": "\"It's a Git system! I know this!\"",
+						"created_at": 1740939121,
+						"id": "mfn5k0r",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 54
+					},
+					{
+						"author": {
+							"id": "Ashamed-Gap450",
+							"name": "Ashamed-Gap450",
+							"platform_specific_data": null
+						},
+						"content": "That's such a goid idea.\n\nWhere I work juniors struggle alot with understanding how to properly use git, I've used other visual tools to explain them and it helps a lot, this   might add a new level of interactivity and help even more, ty.",
+						"created_at": 1740936310,
+						"id": "mfmvzdf",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 30
+					},
+					{
+						"author": {
+							"id": "ILikeBumblebees",
+							"name": "ILikeBumblebees",
+							"platform_specific_data": null
+						},
+						"content": "There's also [Oh my Git!](https://ohmygit.org/)",
+						"created_at": 1740939555,
+						"id": "mfn71av",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 19
+					},
+					{
+						"author": {
+							"id": "teerre",
+							"name": "teerre",
+							"platform_specific_data": null
+						},
+						"content": "Git so convoluted people are remaking minecraft just to understand it\n\nJust use jujutsu, folks",
+						"created_at": 1740941329,
+						"id": "mfnd408",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 17
+					},
+					{
+						"author": {
+							"id": "Ancillas",
+							"name": "Ancillas",
+							"platform_specific_data": null
+						},
+						"content": "I genuinely don’t understand why anyone struggles with git.  My team switched from SVN to git back in 2010 and we were up and running in a couples days including managing three git servers across our regions.  Even back then there was enough content that a Google search immediately answered any questions.\n\nToday you can simply go to ChatGPT, ask about something, and get the exact commands you need with an explanation to help you learn.\n\nIt’s cool that people are creating games to help folks learn, but I don’t understand where people are getting stuck.  Is it analysis paralysis about being told all the different ways of doing something and not knowing which to choose?",
+						"created_at": 1740963096,
+						"id": "mfpamed",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 10
+					},
+					{
+						"author": {
+							"id": "Semick",
+							"name": "Semick",
+							"platform_specific_data": null
+						},
+						"content": "I just.\n\nPeople will work _so hard_ to avoid learning the simpler use cases of git. It blows my fuckin mind hahaha.",
+						"created_at": 1740966864,
+						"id": "mfplo4r",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 8
+					},
+					{
+						"author": {
+							"id": "Gacmachine",
+							"name": "Gacmachine",
+							"platform_specific_data": null
+						},
+						"content": "Very cool concept - how did you come up with the visual identity?",
+						"created_at": 1740932183,
+						"id": "mfmhugn",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 4
+					},
+					{
+						"author": {
+							"id": "Salty_Mountain_88",
+							"name": "Salty_Mountain_88",
+							"platform_specific_data": null
+						},
+						"content": "This is freaking awesome. Well done 👏🏼👏🏼",
+						"created_at": 1740932430,
+						"id": "mfmioq9",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 3
+					},
+					{
+						"author": {
+							"id": "mcmcc",
+							"name": "mcmcc",
+							"platform_specific_data": null
+						},
+						"content": "Given their slogan is [\"the stupid content tracker\"](https://git-scm.com/about/trademark), you could have gone with _StupidContentCraft_, or _ContentTrackerCraft_.  _DVCSCraft_ doesn't really have the right ring to it.",
+						"created_at": 1740936345,
+						"id": "mfmw3nc",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 2
+					}
+				],
+				"score": 316,
+				"text": "",
+				"title": "I struggled with Git, so I'm making a game to spare others the pain",
+				"url": "https://initialcommit.com/blog/im-making-a-git-game"
+			},
+			{
+				"author": {
+					"id": "fpcoder",
+					"name": "fpcoder",
+					"platform_specific_data": null
+				},
+				"created_at": 1740997690,
+				"engagement_metrics": {
+					"num_comments": 8,
+					"score": 8,
+					"upvote_ratio": 0.64
+				},
+				"id": "1j2fpxa",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "guepier",
+							"name": "guepier",
+							"platform_specific_data": null
+						},
+						"content": "> the best option for matching a sum type in C is just a switch statement, but even that is better than the abomination that is C++’s `std::variant` and its abysmal attempt at matching with `std::visit` (See why *`std::visit` is everything wrong with modern C++*).\n\nI know that article, and it is a cogent critique, but the takeaway of that is absolutely *not* that using unchecked C tagged unions and `switch` is better. In fact, the article ends by explicitly stating that\n\n> In spite of all of this, I’ll be busy encouraging my coworkers to use `variant`\n\nTo claim otherwise is disingenuous, even if you label the section as a “rant”.\n\n(Of course both the Lean and Rust solutions are far superior — no argument there.)",
+						"created_at": 1740998564,
+						"id": "mfrerbl",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 8
+					},
+					{
+						"author": {
+							"id": "Mandey4172",
+							"name": "Mandey4172",
+							"platform_specific_data": null
+						},
+						"content": "For me all versions look fine. Am I the only who thinks judging languages by syntax is a clownish argument?",
+						"created_at": 1741000863,
+						"id": "mfrio3q",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": -2
+					}
+				],
+				"score": 8,
+				"text": "",
+				"title": "A Basic Inductive Type Comparison: Rust, Lean, C, C++",
+				"url": "https://jamesoswald.dev/posts/sumtypes/"
+			},
+			{
+				"author": {
+					"id": "HimothyJohnDoe",
+					"name": "HimothyJohnDoe",
+					"platform_specific_data": null
+				},
+				"created_at": 1741014130,
+				"engagement_metrics": {
+					"num_comments": 0,
+					"score": 0,
+					"upvote_ratio": 0.5
+				},
+				"id": "1j2klcf",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [],
+				"score": 0,
+				"text": "",
+				"title": "(No Boring To-Do Apps)",
+				"url": "https://youtu.be/RyaPmwrjrpY?si=_l0RoIyikUQBrrxw"
+			},
+			{
+				"author": {
+					"id": "henrik_w",
+					"name": "henrik_w",
+					"platform_specific_data": null
+				},
+				"created_at": 1740983444,
+				"engagement_metrics": {
+					"num_comments": 3,
+					"score": 6,
+					"upvote_ratio": 0.63
+				},
+				"id": "1j2chhh",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "Internal-Sun-6476",
+							"name": "Internal-Sun-6476",
+							"platform_specific_data": null
+						},
+						"content": "Funny and true. Thanks for sharing.",
+						"created_at": 1740989816,
+						"id": "mfr13rd",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 2
+					},
+					{
+						"author": {
+							"id": "NemTren",
+							"name": "NemTren",
+							"platform_specific_data": null
+						},
+						"content": "Outer links, duh",
+						"created_at": 1740988721,
+						"id": "mfqzcmi",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 1
+					},
+					{
+						"author": {
+							"id": "diMario",
+							"name": "diMario",
+							"platform_specific_data": null
+						},
+						"content": "Never change a running program (always stop it first).",
+						"created_at": 1740995075,
+						"id": "mfr979p",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 1
+					}
+				],
+				"score": 6,
+				"text": "",
+				"title": "More Good Programming Quotes, Part 6",
+				"url": "https://henrikwarne.com/2025/03/02/more-good-programming-quotes-part-6/"
+			},
+			{
+				"author": {
+					"id": "nicbarkeragain",
+					"name": "nicbarkeragain",
+					"platform_specific_data": null
+				},
+				"created_at": 1740899050,
+				"engagement_metrics": {
+					"num_comments": 22,
+					"score": 212,
+					"upvote_ratio": 0.94
+				},
+				"id": "1j1l36m",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [
+					{
+						"author": {
+							"id": "ElderPimpx",
+							"name": "ElderPimpx",
+							"platform_specific_data": null
+						},
+						"content": "Great post!\n\nThere's no link to the github though. I think this is it:\n\nhttps://github.com/nicbarker/clay",
+						"created_at": 1740917338,
+						"id": "mflcuzc",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 33
+					},
+					{
+						"author": {
+							"id": "bwalk",
+							"name": "bwalk",
+							"platform_specific_data": null
+						},
+						"content": "Hmm. I don't want to sound arrogant (literally because I have no really no clue about all of this), but isn't all of this bread and butter for UI layout engines? Is this supposed to be some revolutionary insight? I can't believe that in all the engineering effort that went into web browser layout engines over the last decades, this hasn't emerged naturally in the process. Also, my mental model of CSS matches exactly the implementation (minus some details I'm not even sure if I agree, like the shrinking for text).\n\nI also watched [the introduction video](https://youtu.be/DYWTw19_8r4). Here he argues that the only way to use CSS is through a web browser and that's why applications nowadays ship entire browser engines. I can't believe that the layout engine in current browsers is not abstracted in some library and could be extracted for general consumption. It just hasn't been done, probably because of time-to-market?\n\nI was also sceptic about the performance implications of immediate mode (recalculating the whole layout each frame/on change). He claims (and I do believe him) that this approach is orders of magnitude faster (200us to 50ms) then retained mode that is used in browsers, apparently? I find this surprising, but this only shows me that there is much space for optimization in retained mode.\n\nOr am I missing something? Would be happy for someone with a deeper understanding to enlighten me.\n\nBtw., what I really don't like about this approach is that we went back a step and again mix content and layout. I really appreciate how far we have come in HTML/CSS, where I can define my content independently (in HTML) and then separately set the layout (with CSS). This just mangles everything together again :( And I don't think any frontend layout person want to write C code for their design...\n\nAlso (so many questions): what's the difference between this and other immediate mode engines like imgui/egui or QML and what not?\n\nAlright, final edit after finishing the introduction video. My conclusion is, layout MUST be declarative (like HTML/CSS is) because the imperative style that this method here proposes just doesn't scale. [Just look at this code](https://github.com/nicbarker/clay/blob/4ee501019c4ce7df5fb2ac94a1d1e6aaf0730d20/examples/raylib-sidebar-scrolling-container/main.c#L45), no way that this is maintainable in the long run. Especially for frontend experts. Maybe this can be abstracted again so that a declarative defininition can create the code but then we just reinvented HTML/CSS, no?",
+						"created_at": 1740924613,
+						"id": "mflua9q",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": true,
+							"is_stickied": false
+						},
+						"score": 22
+					},
+					{
+						"author": {
+							"id": "alternatex0",
+							"name": "alternatex0",
+							"platform_specific_data": null
+						},
+						"content": "Beautifully done video. Rarely have I been educated on a topic I'm curious about in this manner. Even though I've been in the industry for a long while, I believe this video would be approachable to devs with very little experience despite covering a relatively complex topic. Good stuff, we need more educators like you.",
+						"created_at": 1740941821,
+						"id": "mfneu2j",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 17
+					},
+					{
+						"author": {
+							"id": "redsteve905",
+							"name": "redsteve905",
+							"platform_specific_data": null
+						},
+						"content": "hmm seems very similar to how Android has done things for years, between Constraint Layouts and now Compostables.",
+						"created_at": 1740966268,
+						"id": "mfpjw9h",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 5
+					},
+					{
+						"author": {
+							"id": "levodelellis",
+							"name": "levodelellis",
+							"platform_specific_data": null
+						},
+						"content": "Video of the year. I'll rewatch this sometime soon",
+						"created_at": 1740923564,
+						"id": "mflrfkt",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 4
+					},
+					{
+						"author": {
+							"id": "matorin57",
+							"name": "matorin57",
+							"platform_specific_data": null
+						},
+						"content": "Been meaning to try out Clay for a project, looks like a good UI framework for C/C++",
+						"created_at": 1740963939,
+						"id": "mfpd26r",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": 1
+					},
+					{
+						"author": {
+							"id": "YahenP",
+							"name": "YahenP",
+							"platform_specific_data": null
+						},
+						"content": "Well, a few more years of hard work and they will invent the turbo vision.",
+						"created_at": 1740927719,
+						"id": "mfm3a43",
+						"platform": "reddit",
+						"platform_specific_data": {
+							"is_edited": false,
+							"is_stickied": false
+						},
+						"score": -3
+					}
+				],
+				"score": 212,
+				"text": "",
+				"title": "How Clay's UI Layout Algorithm Works",
+				"url": "https://youtu.be/by9lQvpvMIc"
+			},
+			{
+				"author": {
+					"id": "c-digs",
+					"name": "c-digs",
+					"platform_specific_data": null
+				},
+				"created_at": 1741001978,
+				"engagement_metrics": {
+					"num_comments": 0,
+					"score": 0,
+					"upvote_ratio": 0.33
+				},
+				"id": "1j2grgu",
+				"platform": "reddit",
+				"platform_specific_data": {
+					"is_self": false,
+					"over_18": false,
+					"spoiler": false
+				},
+				"replies": [],
+				"score": 0,
+				"text": "",
+				"title": "A Practical Guide to Modular Monoliths with .NET",
+				"url": "https://youtu.be/VEggfW0A_Oo"
+			}
+		],
+		"average_sentiment": 0.5,
+		"distribution": {
+			"negative": 0,
+			"neutral": 10,
+			"positive": 0
+		},
+		"metadata": {
+			"analysis_timestamp": 1741018496.932798,
+			"original_metadata": {
+				"sort": "hot",
+				"subreddit": "programming"
+			}
+		},
+		"platform": "reddit"
+	}
+]
