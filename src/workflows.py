@@ -4,7 +4,7 @@ from temporalio.common import RetryPolicy
 from typing import Dict, List
 
 with workflow.unsafe.imports_passed_through():
-    from activities import scrape_reddit, analyze_sentiment
+    from activities import scrape_reddit, analyze_sentiment, scrape_twitter
 
 @workflow.defn
 class RedditScraperWorkflow:
@@ -75,4 +75,31 @@ class SentimentAnalyzerWorkflow:
                 )
             
             # Wait a bit before checking for more posts
-            await workflow.sleep(timedelta(seconds=30)) 
+            await workflow.sleep(timedelta(seconds=30))
+
+@workflow.defn
+class TwitterScraperWorkflow:
+    @workflow.run
+    async def run(self) -> None:
+        # Get the handle to the sentiment analyzer workflow (no await needed)
+        sentiment_analyzer = workflow.get_external_workflow_handle(
+            workflow_id="sentiment-analyzer"
+        )
+        
+        while True:
+            # Execute the scraping activity
+            tweets = await workflow.execute_activity(
+                scrape_twitter,
+                start_to_close_timeout=timedelta(minutes=5),
+                retry_policy=RetryPolicy(
+                    initial_interval=timedelta(seconds=1),
+                    maximum_interval=timedelta(minutes=1),
+                    maximum_attempts=3,
+                )
+            )
+            
+            # Send the tweets to the sentiment analyzer workflow via signal
+            await sentiment_analyzer.signal("new_posts", tweets)
+            
+            # Wait for 2 hours before next scrape - longer interval to avoid rate limits
+            await workflow.sleep(timedelta(hours=2)) 
