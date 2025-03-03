@@ -98,7 +98,7 @@ Provide your response in the following JSON format:
         try:
             # Get analysis from OpenAI
             response = await client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a sentiment analysis expert. Analyze content thoroughly and provide analysis in the requested JSON format only."},
                     {"role": "user", "content": prompt}

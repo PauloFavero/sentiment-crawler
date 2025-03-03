@@ -71,17 +71,48 @@ class SheetsClient:
                 
                 # Extract sentiment score from the platform_specific_data field
                 platform_specific_data = post.get("platform_specific_data", {})
-                sentiment_analysis = platform_specific_data.get("sentiment_analysis", {})
-                sentiment_score = sentiment_analysis.get("sentiment_score", 0)
+                logger.info(f"Platform specific data: {json.dumps(platform_specific_data, default=str)}")
                 
-                logger.info(f"Extracted sentiment score: {sentiment_score} from post {post.get('id', 'unknown')}")
+                # Try both potential locations for sentiment score
+                sentiment_score = 0
+                # Try first directly from the post
+                if "sentiment_score" in post:
+                    sentiment_score = post.get("sentiment_score", 0)
+                    logger.info(f"Found sentiment score directly in post: {sentiment_score}")
+                
+                # If not found, try in platform_specific_data.sentiment_analysis
+                if sentiment_score == 0 and platform_specific_data:
+                    sentiment_analysis = platform_specific_data.get("sentiment_analysis", {})
+                    
+                    # If sentiment_analysis is a dictionary and has 'sentiment_score'
+                    if isinstance(sentiment_analysis, dict) and "sentiment_score" in sentiment_analysis:
+                        sentiment_score = sentiment_analysis.get("sentiment_score", 0)
+                        logger.info(f"Found sentiment score in sentiment_analysis: {sentiment_score}")
+                    
+                    # If sentiment_analysis is a dictionary and has nested 'sentiment_analysis' with 'sentiment_score'
+                    elif isinstance(sentiment_analysis, dict) and "sentiment_analysis" in sentiment_analysis:
+                        nested_analysis = sentiment_analysis.get("sentiment_analysis", {})
+                        if isinstance(nested_analysis, dict) and "sentiment_score" in nested_analysis:
+                            sentiment_score = nested_analysis.get("sentiment_score", 0)
+                            logger.info(f"Found sentiment score in nested sentiment_analysis: {sentiment_score}")
+                
+                logger.info(f"Final extracted sentiment score: {sentiment_score} from post {post.get('id', 'unknown')}")
                 
                 summary = "No summary available"
                 
                 # Try to extract summary from the analysis
                 try:
-                    if sentiment_analysis:
-                        summary = sentiment_analysis.get("summary", "No summary available")
+                    if isinstance(sentiment_analysis, dict):
+                        # Try direct access first
+                        if "summary" in sentiment_analysis:
+                            summary = sentiment_analysis.get("summary", "No summary available")
+                            logger.info(f"Found summary directly in sentiment_analysis")
+                        # Try nested access
+                        elif "sentiment_analysis" in sentiment_analysis and isinstance(sentiment_analysis.get("sentiment_analysis"), dict):
+                            nested_analysis = sentiment_analysis.get("sentiment_analysis", {})
+                            if "summary" in nested_analysis:
+                                summary = nested_analysis.get("summary", "No summary available")
+                                logger.info(f"Found summary in nested sentiment_analysis")
                 except Exception as e:
                     logger.warning(f"Could not parse analysis data: {e}")
                     summary = "Error parsing analysis"
