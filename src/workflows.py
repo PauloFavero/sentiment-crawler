@@ -34,17 +34,20 @@ class RedditScraperWorkflow:
             await sentiment_analyzer.signal("new_content", scraped_data)
             
             # Wait for 1 hour before next scrape
-            await workflow.sleep(timedelta(hours=1))
+            await workflow.sleep(timedelta(seconds=30))
 
 @workflow.defn
 class SentimentAnalyzerWorkflow:
     def __init__(self) -> None:
         self._content_queue: list[ScrapedData] = []
+        self._processing_signal = False
+        self._new_content_available = False
     
     @workflow.signal
     async def new_content(self, scraped_data: ScrapedData) -> None:
         """Signal handler for receiving new content"""
         self._content_queue.append(scraped_data)
+        self._new_content_available = True
         workflow.logger.info(
             f"Received {len(scraped_data.items)} items from {scraped_data.platform} "
             f"for analysis"
@@ -55,7 +58,20 @@ class SentimentAnalyzerWorkflow:
         workflow.logger.info("Starting sentiment analyzer workflow")
         
         while True:
-            if self._content_queue:
+            # Wait until new content is available
+            def has_content():
+                return self._new_content_available
+            
+            # Only wait if there's no content to process
+            if not self._new_content_available:
+                await workflow.wait_condition(has_content)
+            
+            # Process all available content
+            while self._content_queue:
+                # Reset the flag if we're about to process the last item
+                if len(self._content_queue) == 1:
+                    self._new_content_available = False
+                
                 # Get the next batch of content
                 scraped_data = self._content_queue.pop(0)
                 
@@ -81,9 +97,6 @@ class SentimentAnalyzerWorkflow:
                     f"Average sentiment: {sentiment_results['average_sentiment']}, "
                     f"Distribution: {sentiment_results['distribution']}"
                 )
-            
-            # Wait a bit before checking for more content
-            await workflow.sleep(timedelta(seconds=5))
 
 @workflow.defn
 class TwitterScraperWorkflow:
@@ -110,4 +123,4 @@ class TwitterScraperWorkflow:
             await sentiment_analyzer.signal("new_content", scraped_data)
             
             # Wait for 2 hours before next scrape - longer interval to avoid rate limits
-            await workflow.sleep(timedelta(hours=2)) 
+            await workflow.sleep(timedelta(minutes=1)) 

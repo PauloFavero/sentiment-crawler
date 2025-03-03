@@ -22,7 +22,7 @@ async def scrape_reddit() -> ScrapedData:
     
     try:
         # Get hot posts
-        async for submission in subreddit.hot(limit=10):
+        async for submission in subreddit.hot(limit=3):
             # Create author - handle deleted/None authors safely
             author_name = "[deleted]"
             author_id = "deleted"

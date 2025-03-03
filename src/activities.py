@@ -25,7 +25,7 @@ async def analyze_sentiment(scraped_data: ScrapedData) -> Dict:
         try:
             # Get analysis from OpenAI
             response = await client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a sentiment analysis expert. Analyze content thoroughly and provide analysis in the requested JSON format only."},
                     {"role": "user", "content": prompt}
