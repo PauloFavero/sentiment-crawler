@@ -3,12 +3,11 @@ import os
 from openai import AsyncOpenAI
 from typing import Dict, List
 import logging
-from .types import Post
 
 logger = logging.getLogger(__name__)
 
 @activity.defn
-async def analyze_sentiment(posts: List[Post]) -> Dict:
+async def analyze_sentiment(posts: List[Dict]) -> Dict:
     # Initialize OpenAI client
     client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     
@@ -16,34 +15,60 @@ async def analyze_sentiment(posts: List[Post]) -> Dict:
     total_sentiment = 0
     
     for post in posts:
-        # Create source-specific prompt
-        if post.source == "reddit":
-            content_to_analyze = f"""
-            Title: {post.title}
+        # Check if it's a Twitter post (has 'text') or Reddit post (has 'title')
+        is_twitter = 'text' in post and 'source' in post and post['source'] == 'twitter'
+        content_key = 'text' if is_twitter else 'title'
+        source = 'Twitter' if is_twitter else 'Reddit'
+        
+        # Skip if the required content field isn't available
+        if content_key not in post:
+            logger.warning(f"Post missing '{content_key}' field: {post}")
+            continue
             
-            Content: {post.selftext if post.selftext else 'No content'}
-            
-            Top Comments:
-            {chr(10).join([f"- {comment.content[:200]}..." for comment in post.comments[:3]])}
-            """
-        else:  # Twitter
-            content_to_analyze = f"""
-            Tweet: {post.content}
-            
-            Engagement: {post.get_engagement_score()} (likes + retweets)
-            """
+        # Create prompt for sentiment analysis
+        content_to_analyze = f"""
+        Title: {post['title']}
+        
+        Content: {post['selftext'] if post['selftext'] else 'No content'}
+        
+        Top Comments:
+        {chr(10).join([f"- {comment['body'][:200]}..." for comment in post['comments'][:3]])}
+        """
         
         prompt = f"""
-        Analyze the following {post.source} post. Your task has two independent parts:
+        Analyze the following {source} post and its top comments. Your task has two independent parts:
         
-        PART 1: Write a brief summary (2-3 sentences) of the content.
+        PART 1: Write a brief summary (2-3 sentences) of the post and discussion.
         
-        PART 2: Determine the overall sentiment, considering:
-        - Content tone and language
-        - User engagement ({post.get_engagement_score()} interactions)
-        {f'- Community response ({len(post.comments)} comments)' if post.source == 'reddit' else ''}
+        PART 2: Determine the overall sentiment of the entire content (title, post content, and comments combined).
         
-        {content_to_analyze}
+        For the sentiment analysis, think step by step:
+        1. Identify positive elements (enthusiasm, agreement, helpfulness, optimism)
+        2. Identify negative elements (criticism, frustration, disagreement, pessimism)
+        3. Identify neutral elements (factual statements, questions, balanced views)
+        4. Weigh these elements to determine an overall sentiment score between 0 and 1 where:
+           - 0 is extremely negative
+           - 0.5 is neutral
+           - 1 is extremely positive
+        
+        Content: {post[content_key]}
+        
+        Here are some examples of how to analyze sentiment:
+        
+        Example 1:
+        Content: "This new framework is terrible. It's slow, buggy, and poorly documented. Most comments agree it's a waste of time."
+        Thinking: The post expresses strong negative opinions about a framework. Words like "terrible", "slow", "buggy" indicate frustration. Comments reinforce this negative view. No significant positive elements.
+        Sentiment score: 0.2 (quite negative)
+        
+        Example 2:
+        Content: "Just released v2.0 of my open-source tool. It has 30% better performance and new features. Comments are mostly excited, though some mention minor bugs."
+        Thinking: The post announces positive improvements. Words like "better performance" and "new features" show progress. Comments are "mostly excited" (positive) with only "minor bugs" mentioned (slight negative).
+        Sentiment score: 0.8 (quite positive)
+        
+        Example 3:
+        Content: "Comparing Rust vs Go for backend development. Both have strengths: Rust for performance, Go for simplicity. Comments debate trade-offs with valid points on both sides."
+        Thinking: The post presents a balanced comparison. No strong positive or negative language. Comments show debate but with "valid points on both sides" suggesting a balanced discussion.
+        Sentiment score: 0.5 (neutral)
         
         Provide your response in the following JSON format:
         {{

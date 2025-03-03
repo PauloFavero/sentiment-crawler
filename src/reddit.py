@@ -1,7 +1,13 @@
+from datetime import datetime
 from temporalio import activity
 import asyncpraw
 import os
+from openai import AsyncOpenAI
+from typing import Dict, List
 import logging
+import tweepy
+import asyncio
+import random
 
 logger = logging.getLogger(__name__)
 
