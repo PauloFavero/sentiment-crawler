@@ -116,29 +116,59 @@ async def analyze_sentiment(posts: List[Dict]) -> Dict:
         """
         
         prompt = f"""
-        Analyze the following content from {source} and provide:
-        1. A brief summary (2-3 sentences)
-        2. A sentiment score between 0 and 1 where:
+        Analyze the following {source} post and its top comments. Your task has two independent parts:
+        
+        PART 1: Write a brief summary (2-3 sentences) of the post and discussion.
+        
+        PART 2: Determine the overall sentiment of the entire content (title, post content, and comments combined).
+        
+        For the sentiment analysis, think step by step:
+        1. Identify positive elements (enthusiasm, agreement, helpfulness, optimism)
+        2. Identify negative elements (criticism, frustration, disagreement, pessimism)
+        3. Identify neutral elements (factual statements, questions, balanced views)
+        4. Weigh these elements to determine an overall sentiment score between 0 and 1 where:
            - 0 is extremely negative
            - 0.5 is neutral
            - 1 is extremely positive
         
         Content: {post[content_key]}
         
+        Here are some examples of how to analyze sentiment:
+        
+        Example 1:
+        Content: "This new framework is terrible. It's slow, buggy, and poorly documented. Most comments agree it's a waste of time."
+        Thinking: The post expresses strong negative opinions about a framework. Words like "terrible", "slow", "buggy" indicate frustration. Comments reinforce this negative view. No significant positive elements.
+        Sentiment score: 0.2 (quite negative)
+        
+        Example 2:
+        Content: "Just released v2.0 of my open-source tool. It has 30% better performance and new features. Comments are mostly excited, though some mention minor bugs."
+        Thinking: The post announces positive improvements. Words like "better performance" and "new features" show progress. Comments are "mostly excited" (positive) with only "minor bugs" mentioned (slight negative).
+        Sentiment score: 0.8 (quite positive)
+        
+        Example 3:
+        Content: "Comparing Rust vs Go for backend development. Both have strengths: Rust for performance, Go for simplicity. Comments debate trade-offs with valid points on both sides."
+        Thinking: The post presents a balanced comparison. No strong positive or negative language. Comments show debate but with "valid points on both sides" suggesting a balanced discussion.
+        Sentiment score: 0.5 (neutral)
+        
         Provide your response in the following JSON format:
         {{
             "summary": "your summary here",
-            "sentiment_score": 0.X,
-            "reasoning": "brief explanation of the sentiment score"
+            "sentiment_analysis": {{
+                "positive_elements": "list key positive aspects",
+                "negative_elements": "list key negative aspects",
+                "neutral_elements": "list key neutral aspects",
+                "sentiment_score": 0.X,
+                "reasoning": "brief explanation of how you arrived at this score"
+            }}
         }}
         """
         
         try:
             # Get analysis from OpenAI
             response = await client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[
-                    {"role": "system", "content": "You are a sentiment analysis expert. Provide analysis in the requested JSON format only."},
+                    {"role": "system", "content": "You are a sentiment analysis expert. Analyze content thoroughly and provide analysis in the requested JSON format only."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.3,
@@ -149,14 +179,24 @@ async def analyze_sentiment(posts: List[Dict]) -> Dict:
             analysis = response.choices[0].message.content
             # Add analysis to post data
             analyzed_post = post.copy()
+            
+            # Extract sentiment score from the nested structure
+            sentiment_score = 0.5  # Default
+            try:
+                import json
+                parsed_analysis = json.loads(analysis)
+                sentiment_score = parsed_analysis.get("sentiment_analysis", {}).get("sentiment_score", 0.5)
+            except Exception as e:
+                logger.error(f"Error parsing analysis JSON: {e}")
+            
             analyzed_post.update({
                 "analysis": analysis,
-                "sentiment_score": analysis.get("sentiment_score", 0.5)
+                "sentiment_score": sentiment_score
             })
             analyzed_posts.append(analyzed_post)
-            total_sentiment += analysis.get("sentiment_score", 0.5)
+            total_sentiment += sentiment_score
             
-            logger.info(f"Analyzed post {post['id']} with sentiment score {analysis.get('sentiment_score', 0.5)}")
+            logger.info(f"Analyzed post {post['id']} with sentiment score {sentiment_score}")
             
         except Exception as e:
             logger.error(f"Error analyzing post {post['id']}: {e}")
