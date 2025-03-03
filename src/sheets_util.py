@@ -65,18 +65,13 @@ class SheetsClient:
             for post in results.get("analyzed_posts", []):
                 logger.info(f"Processing post: {post.get('id', 'unknown')}")
                 
-                # Add detailed debugging for the entire post structure
-                logger.info(f"FULL POST STRUCTURE: {json.dumps(post, default=str)}")
-                
                 # Prepare row data
                 source = post.get("platform", "unknown")
                 content = post.get("title", post.get("text", "No content"))
                 
                 # Extract sentiment score from the platform_specific_data field
                 platform_specific_data = post.get("platform_specific_data", {})
-                logger.info(f"Platform specific data: {json.dumps(platform_specific_data, default=str)}")
                 sentiment_analysis = platform_specific_data.get("sentiment_analysis", {})
-                logger.info(f"Sentiment analysis data: {json.dumps(sentiment_analysis, default=str)}")
                 sentiment_score = sentiment_analysis.get("sentiment_score", 0)
                 
                 logger.info(f"Extracted sentiment score: {sentiment_score} from post {post.get('id', 'unknown')}")
