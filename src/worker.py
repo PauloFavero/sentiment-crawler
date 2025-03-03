@@ -3,7 +3,7 @@ import os
 import logging
 from temporalio.client import Client
 from temporalio.worker import Worker
-from workflows import RedditScraperWorkflow
+from workflows import RedditScraperWorkflow, SentimentAnalyzerWorkflow
 from activities import scrape_reddit, analyze_sentiment
 
 # Configure logging
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 async def main():
     logger.info("Worker starting up...")
     try:
-        # Create client connected to server at the given address
+        # Create client connected to server
         client = await Client.connect(os.getenv("TEMPORAL_HOST", "temporal:7233"))
         logger.info("Connected to Temporal server")
 
@@ -24,28 +24,38 @@ async def main():
         worker = Worker(
             client,
             task_queue="reddit-tasks",
-            workflows=[RedditScraperWorkflow],
+            workflows=[RedditScraperWorkflow, SentimentAnalyzerWorkflow],
             activities=[scrape_reddit, analyze_sentiment]
         )
         
-        # Start the Reddit scraper workflow when the worker starts
-        async def start_reddit_scraper():
+        # Start both workflows when the worker starts
+        async def start_workflows():
             try:
-                logger.info("Starting Reddit scraper workflow...")
+                # Start the sentiment analyzer workflow first
                 await client.start_workflow(
-                    RedditScraperWorkflow.run,
-                    id="reddit-scraper-initial",
+                    SentimentAnalyzerWorkflow.run,
+                    id="sentiment-analyzer",
                     task_queue="reddit-tasks"
                 )
-                logger.info("Reddit scraper workflow started successfully")
+                logger.info("Started sentiment analyzer workflow")
+                
+                # Then start the Reddit scraper workflow
+                await client.start_workflow(
+                    RedditScraperWorkflow.run,
+                    id="reddit-scraper",
+                    task_queue="reddit-tasks"
+                )
+                logger.info("Started Reddit scraper workflow")
+                
             except Exception as e:
-                logger.error(f"Error starting Reddit scraper workflow: {e}")
+                logger.error(f"Error starting workflows: {e}")
         
         logger.info("Starting worker...")
-        # Start the Reddit scraper workflow
-        await start_reddit_scraper()
+        # Start the workflows
+        await start_workflows()
         # Run the worker
         await worker.run()
+        
     except Exception as e:
         logger.error(f"Error in main: {e}")
         raise
