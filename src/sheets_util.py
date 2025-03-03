@@ -65,35 +65,36 @@ class SheetsClient:
             for post in results.get("analyzed_posts", []):
                 logger.info(f"Processing post: {post.get('id', 'unknown')}")
                 
+                # Add detailed debugging for the entire post structure
+                logger.info(f"FULL POST STRUCTURE: {json.dumps(post, default=str)}")
+                
                 # Prepare row data
-                source = post.get("source", "unknown")
+                source = post.get("platform", "unknown")
                 content = post.get("title", post.get("text", "No content"))
-                sentiment_score = post.get("sentiment_score", 0)
+                
+                # Extract sentiment score from the platform_specific_data field
+                platform_specific_data = post.get("platform_specific_data", {})
+                logger.info(f"Platform specific data: {json.dumps(platform_specific_data, default=str)}")
+                sentiment_analysis = platform_specific_data.get("sentiment_analysis", {})
+                logger.info(f"Sentiment analysis data: {json.dumps(sentiment_analysis, default=str)}")
+                sentiment_score = sentiment_analysis.get("sentiment_score", 0)
+                
+                logger.info(f"Extracted sentiment score: {sentiment_score} from post {post.get('id', 'unknown')}")
+                
                 summary = "No summary available"
                 
                 # Try to extract summary from the analysis
                 try:
-                    analysis = post.get("analysis", "")
-                    logger.info(f"Analysis type: {type(analysis)}, value: {analysis}")
-                    
-                    if isinstance(analysis, str):
-                        try:
-                            # Try to parse as JSON
-                            analysis_data = json.loads(analysis)
-                            summary = analysis_data.get("summary", analysis[:100])
-                        except json.JSONDecodeError:
-                            # If not valid JSON, use as-is
-                            summary = analysis[:100]
-                    elif isinstance(analysis, dict):
-                        summary = analysis.get("summary", str(analysis)[:100])
-                    else:
-                        summary = str(analysis)[:100]
+                    if sentiment_analysis:
+                        summary = sentiment_analysis.get("summary", "No summary available")
                 except Exception as e:
                     logger.warning(f"Could not parse analysis data: {e}")
                     summary = "Error parsing analysis"
                 
                 # Prepare the row to append
-                row = [timestamp, source, content[:100] + "...", sentiment_score, summary]
+                row = [timestamp, source, 
+                       (content[:100] + "...") if content else "No content", 
+                       sentiment_score, summary]
                 logger.info(f"Appending row: {row}")
                 sheet.append_row(row)
                 logger.info(f"Successfully appended row for post {post.get('id', 'unknown')}")
