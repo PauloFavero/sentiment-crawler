@@ -1,9 +1,10 @@
 from datetime import timedelta
 from temporalio import workflow
 from temporalio.common import RetryPolicy
+from typing import Dict, List
 
 with workflow.unsafe.imports_passed_through():
-    from activities import say_hello, scrape_reddit
+    from activities import say_hello, scrape_reddit, analyze_sentiment
 
 @workflow.defn
 class GreetingWorkflow:
@@ -23,7 +24,7 @@ class GreetingWorkflow:
 @workflow.defn
 class RedditScraperWorkflow:
     @workflow.run
-    async def run(self) -> list:
+    async def run(self) -> Dict:
         # Execute the scraping activity
         posts = await workflow.execute_activity(
             scrape_reddit,
@@ -35,6 +36,26 @@ class RedditScraperWorkflow:
             )
         )
         
+        # Perform sentiment analysis on the posts
+        sentiment_results = await workflow.execute_activity(
+            analyze_sentiment,
+            posts,
+            start_to_close_timeout=timedelta(minutes=5),
+            retry_policy=RetryPolicy(
+                initial_interval=timedelta(seconds=1),
+                maximum_interval=timedelta(minutes=1),
+                maximum_attempts=3,
+            )
+        )
+        
+        # Aggregate results
+        aggregated_data = {
+            'total_posts': len(posts),
+            'sentiment_distribution': sentiment_results['distribution'],
+            'posts_with_sentiment': sentiment_results['analyzed_posts'],
+            'average_score': sum(post['score'] for post in posts) / len(posts),
+        }
+        
         # Schedule the next run in 1 hour using a timer
         await workflow.sleep(timedelta(hours=1))
         
@@ -45,4 +66,4 @@ class RedditScraperWorkflow:
             task_queue="reddit-tasks"
         )
         
-        return posts 
+        return aggregated_data 
