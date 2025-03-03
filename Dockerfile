@@ -24,8 +24,5 @@ COPY ./src/ /app/src/
 # Install dependencies
 RUN poetry install --no-interaction --no-ansi
 
-# Install tweepy explicitly
-RUN pip install tweepy==4.14.0
-
 # Set the command to run the worker
 CMD ["python", "app/worker.py"] 

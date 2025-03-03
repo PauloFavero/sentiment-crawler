@@ -4,7 +4,9 @@ import logging
 from temporalio.client import Client
 from temporalio.worker import Worker
 from workflows import RedditScraperWorkflow, SentimentAnalyzerWorkflow, TwitterScraperWorkflow
-from activities import scrape_reddit, analyze_sentiment, scrape_twitter
+from activities import analyze_sentiment
+from reddit import scrape_reddit
+from twitter import scrape_twitter
 
 # Configure logging
 logging.basicConfig(

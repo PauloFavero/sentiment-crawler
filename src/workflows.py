@@ -4,7 +4,9 @@ from temporalio.common import RetryPolicy
 from typing import Dict, List
 
 with workflow.unsafe.imports_passed_through():
-    from activities import scrape_reddit, analyze_sentiment, scrape_twitter
+    from activities import analyze_sentiment
+    from reddit import scrape_reddit
+    from twitter import scrape_twitter
 
 @workflow.defn
 class RedditScraperWorkflow:
@@ -75,7 +77,7 @@ class SentimentAnalyzerWorkflow:
                 )
             
             # Wait a bit before checking for more posts
-            await workflow.sleep(timedelta(seconds=30))
+            await workflow.sleep(timedelta(seconds=5))
 
 @workflow.defn
 class TwitterScraperWorkflow:
