@@ -2,6 +2,7 @@ import gspread
 import os
 import json
 import logging
+import traceback
 from datetime import datetime
 from oauth2client.service_account import ServiceAccountCredentials
 from typing import Dict, List, Any
@@ -35,6 +36,7 @@ class SheetsClient:
             logger.info("Successfully initialized Google Sheets client")
         except Exception as e:
             logger.error(f"Error initializing Google Sheets client: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             raise
     
     def append_sentiment_results(self, results: Dict[str, Any]) -> bool:
@@ -49,13 +51,20 @@ class SheetsClient:
         """
         try:
             # Open the sheet
+            logger.info(f"Attempting to open sheet with ID: {self.sheet_id}")
             sheet = self.client.open_by_key(self.sheet_id).sheet1
+            logger.info(f"Successfully opened Google Sheet")
             
             # Get the timestamp
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
+            # Log the structure of the results for debugging
+            logger.info(f"Results structure: {json.dumps(results, default=str)[:200]}...")
+            
             # For each post in the results
             for post in results.get("analyzed_posts", []):
+                logger.info(f"Processing post: {post.get('id', 'unknown')}")
+                
                 # Prepare row data
                 source = post.get("source", "unknown")
                 content = post.get("title", post.get("text", "No content"))
@@ -64,18 +73,30 @@ class SheetsClient:
                 
                 # Try to extract summary from the analysis
                 try:
-                    if isinstance(post.get("analysis"), str):
-                        import json
-                        analysis_data = json.loads(post.get("analysis"))
-                        summary = analysis_data.get("summary", "No summary available")
-                    elif isinstance(post.get("analysis"), dict):
-                        summary = post.get("analysis", {}).get("summary", "No summary available")
+                    analysis = post.get("analysis", "")
+                    logger.info(f"Analysis type: {type(analysis)}, value: {analysis}")
+                    
+                    if isinstance(analysis, str):
+                        try:
+                            # Try to parse as JSON
+                            analysis_data = json.loads(analysis)
+                            summary = analysis_data.get("summary", analysis[:100])
+                        except json.JSONDecodeError:
+                            # If not valid JSON, use as-is
+                            summary = analysis[:100]
+                    elif isinstance(analysis, dict):
+                        summary = analysis.get("summary", str(analysis)[:100])
+                    else:
+                        summary = str(analysis)[:100]
                 except Exception as e:
                     logger.warning(f"Could not parse analysis data: {e}")
+                    summary = "Error parsing analysis"
                 
                 # Prepare the row to append
                 row = [timestamp, source, content[:100] + "...", sentiment_score, summary]
+                logger.info(f"Appending row: {row}")
                 sheet.append_row(row)
+                logger.info(f"Successfully appended row for post {post.get('id', 'unknown')}")
             
             # Also add the overall sentiment
             row = [
@@ -87,10 +108,12 @@ class SheetsClient:
                 results.get("average_sentiment", 0),
                 "Average sentiment score"
             ]
+            logger.info(f"Appending summary row: {row}")
             sheet.append_row(row)
             
             logger.info(f"Successfully appended {len(results.get('analyzed_posts', []))} rows to Google Sheet")
             return True
         except Exception as e:
             logger.error(f"Error appending to Google Sheet: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return False 

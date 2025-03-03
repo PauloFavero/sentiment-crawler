@@ -3,8 +3,8 @@ import os
 from openai import AsyncOpenAI
 from typing import Dict, List
 import logging
-from .models import Post
-from .sheets_util import SheetsClient
+from models import Post
+from sheets_util import SheetsClient
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
